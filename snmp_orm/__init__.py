@@ -1,0 +1,1 @@
+from snmp_orm.device import get_device
