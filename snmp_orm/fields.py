@@ -23,6 +23,14 @@ class Mapper(object):
 class Field(Mapper):
     def __init__(self, oid):
         self.oid = str_to_oid(oid)
+        
+    def __get__(self, instance, owner):
+        """Descriptor for retrieving a value from a field
+        """
+        if instance is None:
+            return self
+
+        return instance._get(self)
     
     def load(self, adapter):
         raise NotImplemented

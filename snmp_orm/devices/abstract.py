@@ -2,17 +2,8 @@ from snmp_orm.adapter import get_adapter
 from snmp_orm.fields import Field, TableField, Group
 from snmp_orm.utils import get_all_parents
 
-from functools import wraps
 import inspect
 
-
-def setup_properties(cls, fields, proxy, group=None):
-    def create_property(_name, _group):
-        def wrapper(self):
-            return proxy.get(self.adapter, _name, _group)
-        return wrapper
-    for name in fields.keys():
-        setattr(cls, name, property(create_property(name, group)))
 
 def load(f):
     def wrapper(self, *args, **kwargs):
@@ -53,21 +44,12 @@ class TableListProxy(list):
             self.loaded = True
             
 
-class Proxy:
-    def __init__(self, fields, groups):
-        self.fields = fields
-        self.groups = groups
-
-    def get(self, adapter, name, group=None):
-        if group is None:
-            field = self.fields[name]
-        else:
-            field = self.groups[group][name]
-        if isinstance(field, TableField):
-            return TableListProxy(adapter, field)
-        else:
-            vars = field.load(adapter)
-            return field.prepare(vars)
+def get(adapter, field):
+    if isinstance(field, TableField):
+        return TableListProxy(adapter, field)
+    else:
+        vars = field.load(adapter)
+        return field.prepare(vars)
     
     
 class DeviceMeta:
@@ -100,6 +82,9 @@ class AbstractContainer(object):
                     name, field = fields[oid]
                     result.append((name, field.form(vars)))
         return iter(result)
+    
+    def _get(self, field):
+        return get(self.adapter, field)
         
             
 class DeviceBase(type):
@@ -142,17 +127,9 @@ class DeviceBase(type):
         meta.fields = all_fields
         meta.groups = all_groups
         
-        # add lazy result object
-        proxy = Proxy(fields, groups)
-        meta.proxy = proxy
-        
-        # add properties to cls
-        setup_properties(cls, fields, proxy)
-        
         # create containers class
-        for group_name, group_fields in groups.items():
+        for group_name in groups.keys():
             klass = type('Container', (AbstractContainer, ), {"prefix": prefixes[group_name], "group": group_name})
-            setup_properties(klass, group_fields, proxy, group_name)
             setattr(cls, group_name, klass)
         
         cls.meta = meta
@@ -173,5 +150,8 @@ class AbstractDevice(object):
             obj = getattr(self.__class__, name)(self.adapter, self.meta)
             setattr(self, name, obj)
             
+    def _get(self, field):
+        return get(self.adapter, field)
+    
     def __repr__(self):
         return "<%s.%s object for host %s>" % (inspect.getmodule(self.__class__).__name__, self.__class__.__name__, self.host)
