@@ -27,11 +27,13 @@ class DeviceClassRegistry(dict):
     def iter_devices(self):
         groups = walklevel(os.path.join(base, "devices"), level=1)
         for group in list(groups)[1:]:
-            mod_name = os.path.basename(group[0])
+            mod_path = group[0]
+            mod_name = os.path.basename(mod_path)
             for f in group[2]:
                 root, ext = os.path.splitext(f)
                 if ext != ".py" or root == "__init__": continue
-                mod = import_class("snmp_orm.devices.%s.%s" % (mod_name, root))
+                mod = import_class("%s.%s" %(mod_name, root), path=mod_path)
+                #mod = import_class("snmp_orm.devices.%s.%s" % (mod_name, root))
                 device = getattr(mod, "Device", None)
                 if device is None: continue
                 yield device
