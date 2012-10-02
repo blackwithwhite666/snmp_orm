@@ -33,6 +33,8 @@ def import_class(name, path=None):
     try:
         mod = __import__(name)
     except:
+        if path: 
+		path = os.path.dirname(os.path.abspath(path))
         base_import_dir = path.split(os.path.basename(path))[0]
         sys.path.append(base_import_dir)
         mod = __import__(name)

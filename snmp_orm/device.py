@@ -33,7 +33,6 @@ class DeviceClassRegistry(dict):
                 root, ext = os.path.splitext(f)
                 if ext != ".py" or root == "__init__": continue
                 mod = import_class("%s.%s" %(mod_name, root), path=mod_path)
-                #mod = import_class("snmp_orm.devices.%s.%s" % (mod_name, root))
                 device = getattr(mod, "Device", None)
                 if device is None: continue
                 yield device
