@@ -235,9 +235,26 @@ class IPAddressMapper(Mapper):
             return IPAddress(var.prettyPrint())
     
 class IPAddressField(SingleValueField, IPAddressMapper):
-    ''' Convert data to mac '''
+    ''' Convert data to IP '''
     pass
 
 class IPAddressTableField(IPAddressField, TableField):
-    ''' Convert data to mac '''
+    ''' Convert data to IP '''
     pass
+
+#
+# Enumeration Field
+#
+class EnumerationMapper(Mapper):
+    def form(self, var):
+        var = super(EnumerationMapper, self).form(var)
+        if var is None: 
+            return None
+        else:
+            return self.enmu_dict[var]
+
+class EnumerationField(SingleValueField, EnumerationMapper):
+    ''' Convert data to enmu name '''
+    def __init__(self, oid, enmu_dict):
+        super(EnumerationField, self).__init__(oid)
+        self.enmu_dict = enmu_dict
