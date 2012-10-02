@@ -33,11 +33,9 @@ def import_class(name, path=None):
     try:
         mod = __import__(name)
     except:
-        base_import_dir = path.split(os.path.basename(path))[0]
+        base_import_dir = path + '/..'
         sys.path.append(base_import_dir)
-        
-        print base_import_dir
-        
+
         mod = __import__(name)
 
     components = name.split('.')
