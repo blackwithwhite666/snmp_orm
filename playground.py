@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 def main():
-    d = get_device("192.168.0.225")
+    d = get_device("192.168.0.253")
     print dict(d.system)
 
 main()
