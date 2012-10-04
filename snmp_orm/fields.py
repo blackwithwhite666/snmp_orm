@@ -213,7 +213,11 @@ class MacMapper(Mapper):
         if var is None: 
             return None
         else:
-            return EUI(':'.join([('%x' % ord(x)).ljust(2, "0") for x in var]))
+            # sometime net-snmp return blank string
+            if var == '':
+                return ''
+            else:
+                return EUI(':'.join([('%x' % ord(x)).ljust(2, "0") for x in var]))
     
 class MacField(SingleValueField, MacMapper):
     ''' Convert data to mac '''
@@ -251,7 +255,7 @@ class EnumerationMapper(Mapper):
         if var is None: 
             return None
         else:
-            return self.enmu_dict[var]
+            return (var, self.enmu_dict[var])
 
 class EnumerationField(SingleValueField, EnumerationMapper):
     ''' Convert data to enmu name '''

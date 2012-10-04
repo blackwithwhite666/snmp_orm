@@ -77,10 +77,23 @@ class AbstractContainer(object):
         else:
             result = []
             fields = dict([ (field.oid, (name, field)) for name, field in self.meta.groups[self.__class__.group].items() ])
-            for oid, vars in self.adapter.getbulk(len(fields), self.__class__.prefix):
+            prefix = self.__class__.prefix
+            prefix_len = len(prefix)
+            for oid, vars in self.adapter.getnext(prefix):
+                if oid[:prefix_len] != prefix:
+                    break
                 if oid in fields:
                     name, field = fields[oid]
                     result.append((name, field.form(vars)))
+                else:
+                    # TODO: better way to handle table
+                    for field_oid in fields:
+                        field_oid_len = len(field_oid)
+                        if oid[:field_oid_len] == field_oid:
+                            name, field = fields[field_oid]
+                            if isinstance(field, TableField):
+                                result.append(((name,) + oid[field_oid_len:], field.form(vars)))
+                                break
         return iter(result)
     
     def _get(self, field):

@@ -5,7 +5,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 def main():
-    d = get_device("192.168.0.253") 
+    d = get_device("127.0.0.1") 
     pprint(dict(d.system))
+    pprint(dict(d.ifTable))
 
 main()
