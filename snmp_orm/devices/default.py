@@ -48,6 +48,7 @@ class Device(AbstractDevice):
     
     # ip (1.3.6.1.2.1.4)
     ip = Group(
+                    prefix = (1,3,6,1,2,1,4),
                     ipForwarding = FromDictField((1,3,6,1,2,1,4,1,0), ipForwarding, int),
                     ipDefaultTTL = IntegerField((1,3,6,1,2,1,4,2,0)),
                     ipInReceives = LongIntegerField((1,3,6,1,2,1,4,3,0)),

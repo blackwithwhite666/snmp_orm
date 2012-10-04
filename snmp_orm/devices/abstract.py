@@ -75,7 +75,8 @@ class AbstractContainer(object):
                         for name, prop in self.__class__.__dict__.items() 
                         if type(prop) == property ])
         else:
-            result = []
+            result = list()
+            result_dict = dict()
             fields = dict([ (field.oid, (name, field)) for name, field in self.meta.groups[self.__class__.group].items() ])
             prefix = self.__class__.prefix
             prefix_len = len(prefix)
@@ -92,8 +93,14 @@ class AbstractContainer(object):
                         if oid[:field_oid_len] == field_oid:
                             name, field = fields[field_oid]
                             if isinstance(field, TableField):
-                                result.append(((name,) + oid[field_oid_len:], field.form(vars)))
+                                if not result_dict.has_key(name):
+                                    result_dict[name] = dict()
+                                idx = oid[field_oid_len:]
+                                if len(idx) == 1: idx = idx[0]
+                                result_dict[name][idx] = field.form(vars)
                                 break
+            result += result_dict.items()
+
         return iter(result)
     
     def _get(self, field):
