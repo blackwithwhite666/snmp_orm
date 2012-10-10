@@ -255,10 +255,16 @@ class EnumerationMapper(Mapper):
         if var is None: 
             return None
         else:
-            return (var, self.enmu_dict[var])
+            if self.enmu_dict.has_key(var):
+                return (var, self.enmu_dict[var])
+            else:
+                return (var, None)
 
 class EnumerationField(SingleValueField, EnumerationMapper):
     ''' Convert data to enmu name '''
     def __init__(self, oid, enmu_dict):
         super(EnumerationField, self).__init__(oid)
         self.enmu_dict = enmu_dict
+
+class EnumerationTableField(EnumerationField, TableField):
+    pass
