@@ -7,6 +7,9 @@ import logging
 
 def play(ip):
     d = get_device(ip)
+    print d.system.sysContact
+    d.system.sysContact = 'contact from ' + str(ip)
+
     for k, i in d.__dict__.items():
         if isinstance(i, AbstractContainer):
             print '*' * 78

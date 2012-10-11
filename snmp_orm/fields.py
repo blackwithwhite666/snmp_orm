@@ -35,6 +35,9 @@ class Field(Mapper):
     def load(self, adapter):
         raise NotImplemented
     
+    def set(self, adapter, value):
+        raise NotImplemented
+    
     def prepare(self, vars):
         return self.form(vars)
     
@@ -81,6 +84,9 @@ class TableField:
 class SingleValueField(Field):    
     def load(self, adapter):
         return adapter.get_one(self.oid)
+    def set(self, adapter, value):
+        return adapter.set(self.oid, value)
+        
 
 class TableValueField(Field, TableField):
     pass

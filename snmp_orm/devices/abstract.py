@@ -50,6 +50,10 @@ def get(adapter, field):
     else:
         vars = field.load(adapter)
         return field.prepare(vars)
+
+def set(adapter, field, value):
+    # TODO: Implement set table value
+    return field.set(adapter, value)
     
     
 class DeviceMeta:
@@ -68,6 +72,7 @@ class AbstractContainer(object):
     def __init__(self, adapter, meta):
         self.adapter = adapter
         self.meta = meta
+        self.items_list = []
         
     def __iter__(self):
         if self.__class__.prefix is None:
@@ -102,13 +107,32 @@ class AbstractContainer(object):
             result += result_dict.items()
 
         return iter(result)
-    
+    def __setattr__(self, name, value):
+        if name in self.__class__.items_list:
+            self._set(self._get_field_by_name(name), value)
+        else:
+            super(AbstractContainer, self).__setattr__(name, value)
+    def __getattr__(self, name):
+        field = self._get_field_by_name(name)
+        if field:
+            return self._get(field)
+        else:
+            raise NameError("name '%s' is not defined" % name)
+    def _get_field_by_name(self, name):
+        if name in self.__class__.items_list:
+            return self.meta.groups[self.__class__.group][name]
+        else:
+            return None
     def _get(self, field):
         return get(self.adapter, field)
-        
+
+    def _set(self, field, value):
+        # FIXME: how could I handle the return value
+        return set(self.adapter, field, value)
             
 class DeviceBase(type):
     def __new__(cls, name, bases, attrs):
+        from pprint import pprint
         cls = super(DeviceBase, cls).__new__(cls, name, bases, attrs)
         meta = DeviceMeta()
         parents = get_all_parents(cls)[1:]
@@ -149,7 +173,14 @@ class DeviceBase(type):
         
         # create containers class
         for group_name in groups.keys():
-            klass = type('Container', (AbstractContainer, ), {"prefix": prefixes[group_name], "group": group_name})
+            klass = type(
+                'Container', 
+                (AbstractContainer, ), 
+                {
+                    "prefix": prefixes[group_name], 
+                    "group": group_name,
+                    "items_list": meta.groups[group_name].keys()
+                })
             setattr(cls, group_name, klass)
         
         cls.meta = meta
