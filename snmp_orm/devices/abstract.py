@@ -11,24 +11,27 @@ def load(f):
         return f(self, *args, **kwargs)
     return wrapper
 
-class TableListProxy(list):
-    for methodName in set(dir(list)) - set(dir(object)):
-        f = getattr(list, methodName)
+class TableListProxy(dict):
+    for methodName in set(dir(dict)) - set(dir(object)):
+        f = getattr(dict, methodName)
         locals()[methodName] = load(f)
         
     def __init__(self, adapter, field):
-        list.__init__(self)
+        dict.__init__(self)
         self.adapter = adapter
         self.d = None
         self.field = field
         self.loaded = False
     
     @load
-    def __str__(self): return list.__str__(self)
+    def __str__(self): return dict.__str__(self)
     @load
-    def __repr__(self): return list.__repr__(self)
+    def __repr__(self): return dict.__repr__(self)
     
-    def oid(self, key):
+    def get_by_index(self, key):
+        from types import IntType
+        if type(key) is IntType:
+            key = (key,)
         if self.loaded:
             if self.d is None:
                 self.d = dict([ (oid[-1], value) for oid, value in self ])
@@ -39,19 +42,30 @@ class TableListProxy(list):
     
     def load(self):
         if not self.loaded:
+            oid_len = len(self.field.oid)
             vars = self.field.load_many(self.adapter)
-            list.extend(self, self.field.prepare_many(vars))
             self.loaded = True
+            for oid, v in self.field.prepare_many(vars):
+                idx = oid[oid_len:]
+                if len(idx) == 1:
+                    idx = idx[0]
+                self.update({idx: v})
+
+    def __setitem__(self, key, value):
+        self.field.set_one(self.adapter, key, value)
+    
+    def __getitem__(self, key):
+        return self.get_by_index(key)
             
 
-def get(adapter, field):
+def get(adapter, field, index=None):
     if isinstance(field, TableField):
         return TableListProxy(adapter, field)
     else:
         vars = field.load(adapter)
         return field.prepare(vars)
 
-def set(adapter, field, value):
+def set_one(adapter, field, value):
     # TODO: Implement set table value
     return field.set(adapter, value)
     
@@ -128,7 +142,10 @@ class AbstractContainer(object):
 
     def _set(self, field, value):
         # FIXME: how could I handle the return value
-        return set(self.adapter, field, value)
+        return set_one(self.adapter, field, value)
+
+    def __call__(self, *args):
+        print args
             
 class DeviceBase(type):
     def __new__(cls, name, bases, attrs):

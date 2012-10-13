@@ -1,14 +1,21 @@
 from snmp_orm import get_device
 from pprint import pprint
 from snmp_orm.devices.abstract import AbstractContainer
-
+from pysnmp.proto import rfc1902
 import logging
 #logging.basicConfig(level=logging.DEBUG)
 
 def play(ip):
     d = get_device(ip)
     print d.system.sysContact
-    d.system.sysContact = 'contact from ' + str(ip)
+    d.system.sysContact = str(ip)
+   
+    print 'row:', d.ifTable.ifAdminStatus
+    print 'row[1]', d.ifTable.ifAdminStatus[(1,)]
+    d.ifTable.ifAdminStatus[1] = rfc1902.Integer(1)
+    print d.ifTable.ifAdminStatus[1]
+    d.ifTable.ifAdminStatus[1] = rfc1902.Integer(2)
+    print d.ifTable.ifAdminStatus[1]
 
     for k, i in d.__dict__.items():
         if isinstance(i, AbstractContainer):

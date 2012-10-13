@@ -74,7 +74,13 @@ class TableField:
         if type(key) == list: key = tuple(key)
         if type(key) != tuple: key = (key, )
         return adapter.get_one(self.oid + key)
-    
+
+    def set_one(self, adapter, key, value):
+        # FIXME: should convert the value to the rfc1902.* type
+        if type(key) == list: key = tuple(key)
+        if type(key) != tuple: key = (key, )
+        return adapter.set(self.oid + key, value)
+        
     def prepare_many(self, vars):
         return [ (oid, self.form(value)) for oid, value in vars ]
 

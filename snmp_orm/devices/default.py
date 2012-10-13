@@ -28,7 +28,10 @@ class Device(AbstractDevice):
                    ifMtu = IntegerTableField((1,3,6,1,2,1,2,2,1,4)),
                    ifSpeed = IntegerTableField((1,3,6,1,2,1,2,2,1,5)),
                    ifPhysAddress = MacTableField((1,3,6,1,2,1,2,2,1,6)),
-                   ifAdminStatus = FromDictTableField((1,3,6,1,2,1,2,2,1,7), ifStatus, int),
+
+#                   ifAdminStatus = FromDictTableField((1,3,6,1,2,1,2,2,1,7), ifStatus, int), # for test
+                   ifAdminStatus = IntegerTableField((1,3,6,1,2,1,2,2,1,7)),
+
                    ifOperStatus = FromDictTableField((1,3,6,1,2,1,2,2,1,8), ifStatus, int),
                    ifLastChange = TimeTickTableField((1,3,6,1,2,1,2,2,1,9)),
                    ifInOctets = LongIntegerTableField((1,3,6,1,2,1,2,2,1,10)),
