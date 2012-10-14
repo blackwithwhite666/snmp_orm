@@ -11,11 +11,11 @@ def play(ip):
     d.system.sysContact = str(ip)
    
     print 'row:', d.ifTable.ifAdminStatus
-    print 'row[1]', d.ifTable.ifAdminStatus[(1,)]
-    d.ifTable.ifAdminStatus[1] = rfc1902.Integer(1)
-    print d.ifTable.ifAdminStatus[1]
-    d.ifTable.ifAdminStatus[1] = rfc1902.Integer(2)
-    print d.ifTable.ifAdminStatus[1]
+    print 'row[2]', d.ifTable.ifAdminStatus[(2,)]
+    d.ifTable.ifAdminStatus[2] = 'down'
+    print d.ifTable.ifAdminStatus[2]
+    d.ifTable.ifAdminStatus[2] = 1
+    print d.ifTable.ifAdminStatus[2]
 
     for k, i in d.__dict__.items():
         if isinstance(i, AbstractContainer):
