@@ -304,7 +304,7 @@ class IPAddressMapper(Mapper):
         else:
             return IPAddress(var.prettyPrint())
     def toAsn1(self, var):
-        var = super(IntegerMapper, self).toAsn1(var)
+        var = super(IPAddressMapper, self).toAsn1(var)
         if type(var) == StringType and len(var) != 4:
             var = IPAddress(var)
         if isinstance(var, IPAddress):

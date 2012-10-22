@@ -1,4 +1,4 @@
-DEBUG = True
+DEBUG = False
 
 DEFAULT_ADAPTER = 'snmp_orm.adapters.pysnmp_adapter'
 
