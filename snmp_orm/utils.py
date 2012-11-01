@@ -29,7 +29,7 @@ def oid_to_str(t):
     except TypeError:
         return t
         
-def import_class(name, path=None):
+def import_class(name, path=''):
     try:
         mod = __import__(name)
     except:

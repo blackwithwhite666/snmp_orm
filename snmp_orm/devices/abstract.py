@@ -34,8 +34,8 @@ class TableListProxy(dict):
             key = (key,)
         if self.loaded:
             if self.d is None:
-                self.d = dict([ (oid[-1], value) for oid, value in self ])
-            return self.d.get(int(key), None)
+                self.d = dict(self)
+            return self.d.get(key, None)
         else:
             vars = self.field.load_one(self.adapter, key)
             return self.field.prepare(vars)
@@ -145,11 +145,11 @@ class AbstractContainer(object):
         return set_one(self.adapter, field, value)
 
     def __call__(self, *args):
+        # FIXME: what's this
         print args
             
 class DeviceBase(type):
     def __new__(cls, name, bases, attrs):
-        from pprint import pprint
         cls = super(DeviceBase, cls).__new__(cls, name, bases, attrs)
         meta = DeviceMeta()
         parents = get_all_parents(cls)[1:]
