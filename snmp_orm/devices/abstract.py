@@ -165,9 +165,11 @@ class DeviceBase(type):
         # get parent fields and groups
         all_fields = {}
         all_groups = {}
+        all_lut = {}
         for klass in parents:
             all_fields.update(klass.meta.fields)
             all_groups.update(klass.meta.groups)
+            all_lut.update(klass.meta.lut)
         
         # get class fields and groups
         fields = {}
@@ -182,11 +184,19 @@ class DeviceBase(type):
                 prefixes[name] = obj.prefix
                 groups[name] = obj.fields
         
+        # create oid -> field look up table
+        lut = {}
+        for group in groups.values():
+            for name, field in group.items():
+                lut[field.oid] = (name, field)
+
         all_fields.update(fields)
         all_groups.update(groups)
-            
+        all_lut.update(lut)
+        
         meta.fields = all_fields
         meta.groups = all_groups
+        meta.lut = lut
         
         # create containers class
         for group_name in groups.keys():
@@ -220,6 +230,23 @@ class AbstractDevice(object):
             
     def _get(self, field):
         return get(self.adapter, field)
+
+    def prepare_val_by_oid(self, oid, var):
+        field = None
+        name = None
+        index = None
+        oid = tuple(oid)
+        if oid in self.meta.lut.keys():
+            name, field = self.meta.lut[oid]
+        else:
+            tf = filter(lambda x:oid[:len(x)] == x, self.meta.lut.keys())
+            if tf:
+                toid = tf[0]
+                name, field = self.meta.lut[toid]
+                index = oid[len(toid):]
+        if field:
+            field = field.prepare(var)
+        return (name, field, index)
     
     def __repr__(self):
         return "<%s.%s object for host %s>" % (inspect.getmodule(self.__class__).__name__, self.__class__.__name__, self.host)

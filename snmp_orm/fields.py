@@ -103,6 +103,7 @@ class SingleValueField(Field):
     def load(self, adapter):
         return adapter.get_one(self.oid)
     def set(self, adapter, value):
+        value = self.toAsn1(value)
         return adapter.set(self.oid, value)
         
 
