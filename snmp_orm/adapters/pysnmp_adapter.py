@@ -2,6 +2,7 @@ from snmp_orm.adapters.abstract_adapter import AbstractAdapter, AbstractExceptio
 from snmp_orm.utils import str_to_oid 
 
 from pysnmp.entity.rfc3413.oneliner.cmdgen import CommunityData, UsmUserData, UdpTransportTarget, CommandGenerator
+from pysnmp import error as pysnmp_error
 
 class PySNMPError(AbstractException): pass
 
@@ -30,8 +31,13 @@ class AbstractSession(object):
             raise PySNMPError("%s at %s" % (text, position))
         
     def get(self, *args):
-        errorIndication, errorStatus, \
-                 errorIndex, varBinds = self.generator.getCmd(self.authData, self.transportTarget, *args)
+        try:
+            errorIndication, errorStatus, \
+                errorIndex, varBinds = self.generator.getCmd(self.authData, self.transportTarget, *args)
+        except pysnmp_error.PySNMPError, e:
+            # handle origin PySNMPError from pysnmp module.
+            errorIndication = e
+            errorStatus, errorIndex, varBinds = None, None, []
         self.handle_error(errorIndication, errorStatus, errorIndex, varBinds)
         return self.format_varBinds(varBinds)
         
