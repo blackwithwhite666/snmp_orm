@@ -7,23 +7,10 @@ import logging
 
 def play(ip):
     d = get_device(ip)
-    print d.system.sysContact
-    d.system.sysContact = str(ip)
+    print "System Contact is", d.system.sysContact
+    print "Now set to 'Admin of " + str(ip)
+    d.system.sysContact = 'Admin of ' + str(ip)
    
-    print 'row:', d.ifTable.ifAdminStatus
-    print 'row[2]', d.ifTable.ifAdminStatus[(2,)]
-    d.ifTable.ifAdminStatus[2] = 'down'
-    print d.ifTable.ifAdminStatus[2]
-    d.ifTable.ifAdminStatus[2] = 1
-    print d.ifTable.ifAdminStatus[2]
-
-    for k, i in d.__dict__.items():
-        if isinstance(i, AbstractContainer):
-            print '*' * 78
-            print k, '=>'
-            pprint( dict(i) )
-
-
 if __name__ == '__main__':
     import sys
     ip = '127.0.0.1'
