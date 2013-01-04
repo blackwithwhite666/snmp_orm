@@ -34,10 +34,12 @@ class AbstractSession(object):
         try:
             errorIndication, errorStatus, \
                 errorIndex, varBinds = self.generator.getCmd(self.authData, self.transportTarget, *args)
-        except pysnmp_error.PySNMPError, e:
+        except pysnmp_error.PySnmpError, e:
             # handle origin PySNMPError from pysnmp module.
             errorIndication = e
             errorStatus, errorIndex, varBinds = None, None, []
+        
+        
         self.handle_error(errorIndication, errorStatus, errorIndex, varBinds)
         return self.format_varBinds(varBinds)
         
