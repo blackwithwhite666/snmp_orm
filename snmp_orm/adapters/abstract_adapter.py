@@ -143,7 +143,8 @@ class AbstractAdapter:
         
     @log
     def set(self, *args):
-        return self.session_write.set(*map(lambda t: str_to_oid(t[0]), args))
+        #TODO: set more than one values
+        return self.session_write.set(args)
     
     def walk(self, oid):
         oid = str_to_oid(oid)

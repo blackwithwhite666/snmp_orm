@@ -6,11 +6,12 @@ from snmp_orm.log import class_logger, instance_logger
 
 import os
 
-base = os.path.dirname(os.path.abspath(__file__))
+base = [os.path.join(os.path.dirname(os.path.abspath(__file__)),"devices")]
 
 class DeviceClassRegistry(dict):
     def __init__(self):
         self.default_device = DefaultDevice
+        
         for klass in self.iter_devices(): 
             objectIds = self.format_objectId(klass.classId)
             if type(objectIds) not in (list, tuple):
@@ -25,24 +26,32 @@ class DeviceClassRegistry(dict):
         return str(objectId)
         
     def iter_devices(self):
-        groups = walklevel(os.path.join(base, "devices"), level=1)
-        for group in list(groups)[1:]:
-            mod_name = os.path.basename(group[0])
+        tmp_groups = [walklevel(parent_dir, level=1) for parent_dir in base]
+        groups = []
+
+        for i in tmp_groups:
+            groups.extend(list(i)[1:])
+
+
+        for group in groups:
+            mod_path = group[0]
+            mod_name = os.path.basename(mod_path)
             for f in group[2]:
                 root, ext = os.path.splitext(f)
                 if ext != ".py" or root == "__init__": continue
-                mod = import_class("snmp_orm.devices.%s.%s" % (mod_name, root))
+                mod = import_class("%s.%s" %(mod_name, root), path=mod_path)
                 device = getattr(mod, "Device", None)
                 if device is None: continue
+
                 yield device
                 
     def get_class(self, objectId):
         objectId = self.format_objectId(objectId)
+
         if objectId in self:
             return self[objectId]
         return self.default_device
 
-registry = DeviceClassRegistry()
 
 class DeviceManager:
     cls_logger = class_logger()
@@ -69,6 +78,9 @@ class DeviceManager:
         return id
     
     def get_class(self, host, **kwargs):
+        if "path" in kwargs: base.append(kwargs["path"])
+
+        registry = DeviceClassRegistry()
         klass = registry.get_class(self.get_device_id(host, **kwargs))
         self.inst_logger.debug("Use %s for %s" % (repr(klass), host))
         return klass

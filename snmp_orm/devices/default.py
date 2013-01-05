@@ -8,7 +8,7 @@ from snmp_orm.fields import Group, TableValueField, \
 class Device(AbstractDevice):
     # SNMP MIB-2 System (1.3.6.1.2.1.1)
     system = Group(
-                   prefix = (1,3,6,1,2,1,1,1),
+                   prefix = (1,3,6,1,2,1,1),
                    sysDescr = UnicodeField((1,3,6,1,2,1,1,1,0)),
                    sysObjectID = OIDField((1,3,6,1,2,1,1,2,0)),
                    sysUpTime = TimeTickField((1,3,6,1,2,1,1,3,0)),
@@ -21,6 +21,7 @@ class Device(AbstractDevice):
     # SNMP MIB-2 Interfaces (1.3.6.1.2.1.2)
     ifNumber = IntegerField((1,3,6,1,2,1,2,1,0))
     ifTable = Group(
+                   prefix = (1,3,6,1,2,1,2,2),
                    ifIndex = IntegerTableField((1,3,6,1,2,1,2,2,1,1)),
                    ifDescr = UnicodeTableField((1,3,6,1,2,1,2,2,1,2)),
                    ifType = FromDictTableField((1,3,6,1,2,1,2,2,1,3), IANAifType, int),
@@ -47,6 +48,7 @@ class Device(AbstractDevice):
     
     # ip (1.3.6.1.2.1.4)
     ip = Group(
+                    prefix = (1,3,6,1,2,1,4),
                     ipForwarding = FromDictField((1,3,6,1,2,1,4,1,0), ipForwarding, int),
                     ipDefaultTTL = IntegerField((1,3,6,1,2,1,4,2,0)),
                     ipInReceives = LongIntegerField((1,3,6,1,2,1,4,3,0)),

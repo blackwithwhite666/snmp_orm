@@ -1,5 +1,5 @@
 import os
-
+import sys
 from pyasn1.type.univ import ObjectIdentifier
 
 def get_all_parents(cls):
@@ -29,11 +29,18 @@ def oid_to_str(t):
     except TypeError:
         return t
         
-def import_class(name):
-    mod = __import__(name)
+def import_class(name, path=''):
+    try:
+        mod = __import__(name)
+    except:
+        base_import_dir = path + '/..'
+        sys.path.append(base_import_dir)
+        mod = __import__(name)
+
     components = name.split('.')
     for comp in components[1:]:
         mod = getattr(mod, comp)
+
     return mod
 
 def walklevel(some_dir, level=0):
