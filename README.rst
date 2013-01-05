@@ -1,8 +1,7 @@
 snmp_orm -- PySNMP Abstraction
 ==============================
 
-.. note::
-    Source code is hosted on `Github <https://github.com/blackwithwhite666/snmp_orm>`_
+Source code is hosted on `Github <https://github.com/blackwithwhite666/snmp_orm>`_
 
 Introduction
 ------------
