@@ -11,8 +11,8 @@ DEFAULT_ADAPTER = 'snmp_orm.adapters.pysnmp_adapter'
 #: Default SNMP device's port to connect.
 SNMP_PORT = 161
 
-#: Default SNMP device's port to connect, used in unit-tests.
-SNMP_TEST_AGENT_PORT = 60161
+#: Default SNMP device's address to connect, used in unit-tests.
+SNMP_TEST_AGENT_ADDRESS = ('localhost', 60161)
 
 #: How many rows should be read in bulk-mode at once.
 BULK_ROW = 50

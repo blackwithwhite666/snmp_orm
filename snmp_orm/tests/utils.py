@@ -1,19 +1,21 @@
 from __future__ import absolute_import
 
-import snmp_orm.tests.agent as agent
+from unittest import TestCase as BaseTestCase
 
-import unittest
-import os
-import threading
-
-base = os.path.dirname(os.path.abspath(__file__))
+from snmp_orm.tests.agent import BackgroundAgent, SysDescr, Uptime
+from snmp_orm.config import SNMP_TEST_AGENT_ADDRESS
 
 
-if __name__ == '__main__':
-    thread = threading.Thread(target=agent.start)
-    thread.daemon = True
-    thread.start()
-    suite = unittest.TestLoader().discover(start_dir=os.path.join(base, "tests"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
-    agent.stop()
-    thread.join()
+class TestCase(BaseTestCase):
+
+    instructions = None
+
+    def setUp(self):
+        host, port = SNMP_TEST_AGENT_ADDRESS
+        agent = self.agent = BackgroundAgent(host, port)
+        instructions = self.instructions or (SysDescr(), Uptime())
+        for instr in instructions:
+            agent.registerInstr(instr)
+        agent.start()
+        self.addCleanup(agent.stop)
+        super(TestCase, self).setUp()
