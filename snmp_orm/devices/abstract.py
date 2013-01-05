@@ -99,7 +99,7 @@ class AbstractContainer(object):
             fields = dict([ (field.oid, (name, field)) for name, field in self.meta.groups[self.__class__.group].items() ])
             prefix = self.__class__.prefix
             prefix_len = len(prefix)
-            for oid, vars in self.adapter.getnext(prefix):
+            for oid, vars in self.adapter.getbulk(len(fields), prefix):
                 if oid[:prefix_len] != prefix:
                     break
                 if oid in fields:
