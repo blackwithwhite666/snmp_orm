@@ -1,9 +1,13 @@
+from __future__ import absolute_import
+
 import snmp_orm.tests.agent as agent
 
 import unittest
-import os, threading
+import os
+import threading
 
 base = os.path.dirname(os.path.abspath(__file__))
+
 
 if __name__ == '__main__':
     thread = threading.Thread(target=agent.start)

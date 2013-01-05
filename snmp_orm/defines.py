@@ -1,4 +1,8 @@
-# 1.3.6.1.2.1.2.2.1.3
+"""Some constants for snmp_orm."""
+from __future__ import absolute_import
+
+
+#: 1.3.6.1.2.1.2.2.1.3
 IANAifType = dict((
     (1, 'other'),
     (2, 'regular1822'),
@@ -253,7 +257,8 @@ IANAifType = dict((
     (251, 'vdsl2')
 ))
 
-# 1.3.6.1.2.1.2.2.1.8 (ifOperStatus)
+
+#: 1.3.6.1.2.1.2.2.1.8 (ifOperStatus)
 ifStatus = dict((
     (1, "up"),
     (2, "down"),
@@ -264,13 +269,15 @@ ifStatus = dict((
     (7, "lowerLayerDown")
 ))
 
-# 1.3.6.1.2.1.4.1 (ipForwarding)
+
+#: 1.3.6.1.2.1.4.1 (ipForwarding)
 ipForwarding = dict((
     (1, "forwarding"),
     (2, "not-forwarding")
 ))
 
-# 1.3.6.1.2.1.4.21.1.8 (ipRouteType)
+
+#: 1.3.6.1.2.1.4.21.1.8 (ipRouteType)
 ipRouteType = dict((
     (1, "other"),
     (2, "invalid"),
@@ -278,7 +285,8 @@ ipRouteType = dict((
     (4, "indirect")
 ))
 
-# 1.3.6.1.2.1.4.21.1.9 (ipRouteProto)
+
+#: 1.3.6.1.2.1.4.21.1.9 (ipRouteProto)
 ipRouteProto = dict((
     (1, "other"),
     (2, "local"),
@@ -296,7 +304,8 @@ ipRouteProto = dict((
     (14, "bgp")
 ))
 
-# 1.3.6.1.2.1.4.22.1.4 (ipNetToMediaType)
+
+#: 1.3.6.1.2.1.4.22.1.4 (ipNetToMediaType)
 ipNetToMediaType = dict((
     (1, "other"),
     (2, "invalid"),

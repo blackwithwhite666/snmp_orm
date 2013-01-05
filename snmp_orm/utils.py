@@ -1,6 +1,9 @@
 import os
 import sys
+
+from six import string_types, b
 from pyasn1.type.univ import ObjectIdentifier
+
 
 def get_all_parents(cls):
     parents = []
@@ -15,20 +18,23 @@ def get_all_parents(cls):
     parents.reverse()
     return tuple(parents)
 
+
 def str_to_oid(s):
-    if type(s) in (str, unicode): 
+    if isinstance(s, string_types):
         return tuple(map(int, s.split(".")))
-    if isinstance(s, ObjectIdentifier):
-        return tuple(s) 
+    elif isinstance(s, ObjectIdentifier):
+        return tuple(s)
     else:
         return s
-    
+
+
 def oid_to_str(t):
-    try: 
-        return ".".join(map(str, iter(t)))
+    try:
+        return ".".join(map(b, iter(t)))
     except TypeError:
         return t
-        
+
+
 def import_class(name, path=''):
     try:
         mod = __import__(name)
@@ -42,6 +48,7 @@ def import_class(name, path=''):
         mod = getattr(mod, comp)
 
     return mod
+
 
 def walklevel(some_dir, level=0):
     some_dir = some_dir.rstrip(os.path.sep)
