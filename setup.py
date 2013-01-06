@@ -1,7 +1,15 @@
 import os
+import sys
 import re
 
 from setuptools import setup, find_packages
+
+
+# Some defaults.
+extra_requires = []
+
+if sys.version_info < (2, 7):
+    extra_requires.append('importlib')
 
 
 # Description, version and other meta information.
@@ -59,5 +67,5 @@ setup(
     long_description=README + '\n\n' + CHANGES,
     keywords='snmp orm',
     packages=find_packages(),
-    install_requires=['pysnmp', 'netaddr', 'six'],
+    install_requires=['pysnmp', 'netaddr', 'six'] + extra_requires,
 )
