@@ -25,7 +25,7 @@ class TestSequenceFunctions(TestCase):
         self.assertTrue(str(self.adapter.get_one("1.3.6.1.2.1.1.1.0")).startswith("PySNMP"))
 
     def test_adapter_result_type(self):
-        self.assertIsInstance(self.adapter.get_one("1.3.6.1.2.1.1.3.0"), TimeTicks)
+        self.assertTrue(isinstance(self.adapter.get_one("1.3.6.1.2.1.1.3.0"), TimeTicks))
 
 
 if __name__ == "__main__":
