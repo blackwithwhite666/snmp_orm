@@ -1,70 +1,65 @@
 """Manager for devices."""
 from __future__ import absolute_import
 
-import os
 import logging
 
-from snmp_orm.utils import import_class, walklevel, oid_to_str
+from six import b, string_types, binary_type
+from pyasn1.type.univ import ObjectIdentifier
+
+from snmp_orm import devices
+from snmp_orm.utils import find_classes, oid_to_str
 from snmp_orm.adapter import get_adapter
-from snmp_orm.devices.default import Device as DefaultDevice
 from snmp_orm.config import OID_OBJECT_ID
 
 logger = logging.getLogger(__name__)
-
-base = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "devices")]
 
 
 class DeviceClassRegistry(dict):
 
     def __init__(self):
-        self.default_device = DefaultDevice
+        self.default_device = devices.DefaultDevice
 
         for klass in self.iter_devices():
             objectIds = self.format_objectId(klass.classId)
-            if type(objectIds) not in (list, tuple):
+            if not isinstance(objectIds, (list, tuple)):
                 objectIds = (objectIds, )
             for objectId in objectIds:
-                if objectId not in self:
+                objectId = self.format_objectId(objectId)
+                if objectId and objectId not in self:
                     self[objectId] = klass
 
     def format_objectId(self, objectId):
-        if isinstance(objectId, str):
+        if objectId is None:
+            return None
+        elif isinstance(objectId, binary_type):
             return objectId
-        return str(objectId)
+        elif isinstance(objectId, string_types):
+            return b(objectId)
+        elif isinstance(objectId, ObjectIdentifier):
+            return b(objectId)
+        elif isinstance(objectId, (tuple, list)):
+            return oid_to_str(objectId)
+        else:
+            raise ValueError('Unknown OID %r' % objectId)
 
     def iter_devices(self):
-        tmp_groups = [walklevel(parent_dir, level=1) for parent_dir in base]
-        groups = []
-
-        for i in tmp_groups:
-            groups.extend(list(i)[1:])
-
-        for group in groups:
-            mod_path = group[0]
-            mod_name = os.path.basename(mod_path)
-            for f in group[2]:
-                root, ext = os.path.splitext(f)
-                if ext != ".py" or root == "__init__":
-                    continue
-                mod = import_class("%s.%s" % (mod_name, root), path=mod_path)
-                device = getattr(mod, "Device", None)
-                if device is None:
-                    continue
-
-                yield device
+        """Find existed device classes."""
+        for cls in find_classes(devices.AbstractDevice, [devices]):
+            yield cls
 
     def get_class(self, objectId):
         objectId = self.format_objectId(objectId)
-
-        if objectId in self:
+        try:
             return self[objectId]
-        return self.default_device
+        except KeyError:
+            return self.default_device
 
 
 class DeviceManager(object):
 
     def __init__(self):
         self.id_cache = {}
+        self.registry = DeviceClassRegistry()
 
     def get_device_id(self, host, **kwargs):
         host = unicode(host).lower()
@@ -84,13 +79,9 @@ class DeviceManager(object):
         return id_
 
     def get_class(self, host, **kwargs):
-        if "path" in kwargs:
-            base.append(kwargs["path"])
-
-        registry = DeviceClassRegistry()
-        klass = registry.get_class(self.get_device_id(host, **kwargs))
-        logger.debug("Use %s for %s" % (repr(klass), host))
-        return klass
+        cls = self.registry.get_class(self.get_device_id(host, **kwargs))
+        logger.debug("Use %s for %s" % (repr(cls), host))
+        return cls
 
 manager = DeviceManager()
 

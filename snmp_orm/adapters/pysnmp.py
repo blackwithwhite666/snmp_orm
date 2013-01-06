@@ -6,8 +6,7 @@ from pysnmp.entity.rfc3413.oneliner.cmdgen import CommunityData, UsmUserData, \
     UdpTransportTarget, CommandGenerator
 
 from snmp_orm.utils import str_to_oid
-from snmp_orm.adapters.abstract_adapter import AbstractAdapter, \
-    AbstractException
+from snmp_orm.adapters.base import AbstractAdapter, AbstractException
 
 
 class PySNMPError(AbstractException):
@@ -44,7 +43,7 @@ class AbstractSession(object):
             errorIndication, errorStatus, \
                 errorIndex, varBinds = self.generator.getCmd(
                     self.authData, self.transportTarget, *args)
-        except pysnmp_error.PySnmpError, e:
+        except pysnmp_error.PySnmpError as e:
             # handle origin PySNMPError from pysnmp module.
             errorIndication = e
             errorStatus, errorIndex, varBinds = None, None, []

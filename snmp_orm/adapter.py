@@ -1,7 +1,7 @@
 """Load and store all existed adapter's classes."""
 from __future__ import absolute_import
 
-from .utils import import_class
+from .utils import symbol_by_name
 from .settings import SnmpV2Settings, SnmpV3Settings
 from .config import DEFAULT_ADAPTER
 
@@ -12,13 +12,12 @@ class AdapterRegistry(dict):
     def __init__(self):
         self.get_class(DEFAULT_ADAPTER)
 
-    def get_class(self, class_name):
-        if class_name in self:
-            return self[class_name]
+    def get_class(self, module_name):
+        if module_name in self:
+            return self[module_name]
         else:
-            mod = import_class(class_name)
-            cls = getattr(mod, "Adapter")
-            self[class_name] = cls
+            cls = self[module_name] = \
+                symbol_by_name('%s:%s' % (module_name, "Adapter"))
             return cls
 
 

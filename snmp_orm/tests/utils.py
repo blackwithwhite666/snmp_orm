@@ -17,5 +17,8 @@ class TestCase(BaseTestCase):
         for instr in instructions:
             agent.registerInstr(instr)
         agent.start()
-        self.addCleanup(agent.stop)
         super(TestCase, self).setUp()
+
+    def tearDown(self):
+        self.agent.stop()
+        super(TestCase, self).tearDown()

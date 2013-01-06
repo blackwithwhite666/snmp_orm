@@ -89,7 +89,6 @@ class Agent(object):
             if msgVer in api.protoModules:
                 pMod = api.protoModules[msgVer]
             else:
-                print 'Unsupported SNMP version %s' % msgVer
                 return
             reqMsg, wholeMsg = decoder.decode(
                 wholeMsg, asn1Spec=pMod.Message(),

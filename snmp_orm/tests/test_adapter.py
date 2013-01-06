@@ -6,7 +6,7 @@ import unittest
 from pysnmp.proto.rfc1902 import TimeTicks
 
 from snmp_orm.tests.utils import TestCase
-from snmp_orm.adapters.abstract_adapter import AbstractAdapter
+from snmp_orm.adapters.base import AbstractAdapter
 from snmp_orm.adapter import get_adapter
 from snmp_orm import config
 

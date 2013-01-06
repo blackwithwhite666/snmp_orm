@@ -6,7 +6,7 @@ from __future__ import absolute_import
 DEBUG = False
 
 #: Which adapter we should use by default?
-DEFAULT_ADAPTER = 'snmp_orm.adapters.pysnmp_adapter'
+DEFAULT_ADAPTER = 'snmp_orm.adapters.pysnmp'
 
 #: Default SNMP device's port to connect.
 SNMP_PORT = 161

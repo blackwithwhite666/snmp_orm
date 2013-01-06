@@ -3,9 +3,8 @@ from __future__ import absolute_import
 
 import inspect
 from collections import namedtuple, defaultdict
-from types import IntType
 
-from six import with_metaclass, iteritems, iterkeys, next
+from six import with_metaclass, iteritems, iterkeys, next, integer_types
 
 from snmp_orm.adapter import get_adapter
 from snmp_orm.fields import Field, TableField, Group
@@ -45,7 +44,7 @@ class TableListProxy(dict):
         return dict.__repr__(self)
 
     def get_by_index(self, key):
-        if type(key) is IntType:
+        if isinstance(key, integer_types):
             key = (key,)
         if self.loaded:
             if self.d is None:

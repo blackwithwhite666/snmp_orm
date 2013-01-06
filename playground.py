@@ -4,7 +4,6 @@ from pprint import pprint
 from pysnmp.proto import rfc1902
 
 from snmp_orm import get_device
-from snmp_orm.devices.abstract import AbstractContainer
 
 #logging.basicConfig(level=logging.DEBUG)
 

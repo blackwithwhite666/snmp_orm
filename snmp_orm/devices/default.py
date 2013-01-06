@@ -9,7 +9,7 @@ from snmp_orm.fields import Group, TableValueField, UnicodeField, OIDField, \
 from snmp_orm.defines import IANAifType, ifStatus, ipForwarding, ipRouteType, \
     ipRouteProto, ipNetToMediaType
 
-from .abstract import AbstractDevice
+from .base import AbstractDevice
 
 
 class Device(AbstractDevice):
