@@ -10,6 +10,14 @@ Reference Docs
 ==============
 
 .. toctree::
+   :titlesonly:
+
+   getting-started
+
+Reference Docs
+==============
+
+.. toctree::
    :maxdepth: 1
 
    API <api>

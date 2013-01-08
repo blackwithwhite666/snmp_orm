@@ -1,18 +1,18 @@
 adapters Package
 ================
 
-:mod:`abstract_adapter` Module
-------------------------------
+:mod:`base` Module
+------------------
 
-.. automodule:: snmp_orm.adapters.abstract_adapter
+.. automodule:: snmp_orm.adapters.base
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`pysnmp_adapter` Module
-----------------------------
+:mod:`pysnmp` Module
+--------------------
 
-.. automodule:: snmp_orm.adapters.pysnmp_adapter
+.. automodule:: snmp_orm.adapters.pysnmp
     :members:
     :undoc-members:
     :show-inheritance:

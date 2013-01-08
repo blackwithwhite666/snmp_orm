@@ -1,10 +1,18 @@
 devices Package
 ===============
 
-:mod:`abstract` Module
+:mod:`devices` Package
 ----------------------
 
-.. automodule:: snmp_orm.devices.abstract
+.. automodule:: snmp_orm.devices
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`base` Module
+------------------
+
+.. automodule:: snmp_orm.devices.base
     :members:
     :undoc-members:
     :show-inheritance:

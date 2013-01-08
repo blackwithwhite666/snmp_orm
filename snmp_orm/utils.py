@@ -6,7 +6,7 @@ import inspect
 import pkgutil
 import importlib
 
-from six import string_types, b, reraise
+from six import string_types, binary_type, b, reraise
 from pyasn1.type.univ import ObjectIdentifier
 
 
@@ -25,8 +25,8 @@ def get_all_parents(cls):
 
 
 def str_to_oid(s):
-    if isinstance(s, string_types):
-        return tuple(map(int, s.split(".")))
+    if isinstance(s, string_types + (binary_type, )):
+        return tuple(int(val) for val in s.split("."))
     elif isinstance(s, ObjectIdentifier):
         return tuple(s)
     else:
@@ -35,7 +35,7 @@ def str_to_oid(s):
 
 def oid_to_str(t):
     try:
-        return ".".join(map(b, iter(t)))
+        return ".".join(str(val) for val in t)
     except TypeError:
         return t
 

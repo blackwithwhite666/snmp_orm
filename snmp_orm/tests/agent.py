@@ -122,7 +122,10 @@ class Agent(object):
                         )
                     else:
                         # No such instance
-                        pMod.apiPDU.setNoSuchInstanceError(rspPDU, errorIndex)
+                        try:
+                            pMod.apiPDU.setNoSuchInstanceError(rspPDU, errorIndex)
+                        except IndexError:
+                            pass
                         varBinds = pMod.apiPDU.getVarBinds(reqPDU)
                         break
             else:

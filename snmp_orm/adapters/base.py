@@ -116,13 +116,17 @@ class AbstractAdapter(object):
     @log
     def get(self, *args):
         """Return tuple of pairs:
+
+        .. code-block:: python
+
             ((1, 3, 6, 1, 2, 1, 1, 1, 0),
                 OctetString('DGS-3100-24 Gigabit stackable L2 Managed Switch'))
+
         """
         return self.session_read.get(*map(str_to_oid, args))
 
     def get_one(self, oid):
-        """Return oid value"""
+        """Return oid value."""
         variables = self.get(oid)
         if variables:
             result = variables[0][1]
@@ -133,17 +137,24 @@ class AbstractAdapter(object):
     @log
     def getnext(self, *args):
         """Return table:
-                [   ((1, 3, 6, 1, 2, 1, 1, 1, 0),
-                      OctetString('DGS-3100-24 Gigabit stackable L2 Managed Switch')),
-                    ((1, 3, 6, 1, 2, 1, 1, 2, 0), ObjectIdentifier('1.3.6.1.4.1.171.10.94.1')),
-                    ((1, 3, 6, 1, 2, 1, 1, 3, 0), TimeTicks('512281800')),
-                    ((1, 3, 6, 1, 2, 1, 1, 4, 0), OctetString('')) ]
+
+        .. code-block:: python
+
+            [((1, 3, 6, 1, 2, 1, 1, 1, 0),
+              OctetString('DGS-3100-24 Gigabit stackable L2 Managed Switch')),
+             ((1, 3, 6, 1, 2, 1, 1, 2, 0),
+              ObjectIdentifier('1.3.6.1.4.1.171.10.94.1')),
+             ((1, 3, 6, 1, 2, 1, 1, 3, 0),
+              TimeTicks('512281800')),
+             ((1, 3, 6, 1, 2, 1, 1, 4, 0),
+              OctetString(''))]
+
         """
         return self.session_read.getnext(*map(str_to_oid, args))
 
     @log
     def getbulk(self, rows=None, *args):
-        """Return same as getnext method, but use rows number"""
+        """Return same as getnext method, but use rows number."""
         if rows is None:
             rows = self.settings_read["bulk_rows"]
         return self.session_read.getbulk(rows, *map(str_to_oid, args))
@@ -154,7 +165,7 @@ class AbstractAdapter(object):
         return self.session_write.set(args)
 
     def walk(self, oid):
-        """Collect all rows in given OID"""
+        """Collect all rows in given OID."""
         oid = str_to_oid(oid)
         result = []
         walker = Walker(self, oid,

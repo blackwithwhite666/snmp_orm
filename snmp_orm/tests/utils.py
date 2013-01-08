@@ -12,6 +12,8 @@ class TestCase(BaseTestCase):
 
     def setUp(self):
         host, port = SNMP_TEST_AGENT_ADDRESS
+        self.test_host = host
+        self.test_port = port
         agent = self.agent = BackgroundAgent(host, port)
         instructions = self.instructions or (SysDescr(), Uptime())
         for instr in instructions:
