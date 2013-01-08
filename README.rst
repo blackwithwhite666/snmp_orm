@@ -5,7 +5,7 @@ CI status: |cistatus|
 
 Source code is hosted on `Github <https://github.com/blackwithwhite666/snmp_orm>`_
 
-.. |cistatus| image:: https://secure.travis-ci.org/blackwithwhite666/snmp_orm.png
+.. |cistatus| image:: https://secure.travis-ci.org/blackwithwhite666/snmp_orm.png?branch=master
 
 Introduction
 ------------
